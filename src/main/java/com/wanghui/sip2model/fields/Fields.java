@@ -48,7 +48,7 @@ public class Fields {
     Date dateTimeSync; 
     @Field(length = 1, policy = FieldPolicy.REQUIRED)
     Boolean desensitize;
-    @Field(tag = "AH") //This date need not be in the standard format
+    @Field(tag = "AH") //预期日期长度可变，不需要修改为标准格式
     String dueDate; 
     @Field(tag = "BE", policy = FieldPolicy.NOT_REQUIRED)
     String emailAddress;
@@ -60,9 +60,9 @@ public class Fields {
     Date expirationDate;
     @Field(tag = "BO", policy = FieldPolicy.NOT_REQUIRED)
     Boolean feeAcknowledged;
-    @Field(tag = "BV") //Formated according to country conventions
+    @Field(tag = "BV")
     String feeAmount;
-    @Field(tag = "CC", policy = FieldPolicy.NOT_REQUIRED) //Formated according to country conventions
+    @Field(tag = "CC", policy = FieldPolicy.NOT_REQUIRED)
     String feeLimit; 
     @Field(tag = "CG", policy = FieldPolicy.NOT_REQUIRED)
     String feeIdentifier;
@@ -82,7 +82,7 @@ public class Fields {
     HoldMode holdMode;
     @Field(tag = "CM", policy = FieldPolicy.NOT_REQUIRED)
     Date holdPickupDate;
-    @Field(tag = "CF", length=5, policy = FieldPolicy.REQUIRED) // according to spec should be no length, not required but that breaks 3M emulator
+    @Field(tag = "CF", length=5, policy = FieldPolicy.REQUIRED)
     Integer holdQueueLength;
     @Field(tag = "BY", length = 1, policy = FieldPolicy.NOT_REQUIRED)
     HoldType holdType;
@@ -225,7 +225,6 @@ public class Fields {
      * @return
      */
     static public PositionedFieldDefinition getPositionedFieldDefinition(String messageName, String fieldName, PositionedField annotation) {
-        //此处由于在SIP2封装定义是已经定了Field,所以无法通过import的方式导入。
         java.lang.reflect.Field fld;
         try {
             /*
@@ -234,7 +233,7 @@ public class Fields {
              */
             fld = Fields.class.getDeclaredField(fieldName);
         } catch (Exception ex) {
-            throw new AssertionError(messageName + " - Positioned FieldDescriptor not defined: " + fieldName);
+            throw new AssertionError(messageName + " - 位置字段描述未定义: " + fieldName);
         }
 
         /*
@@ -243,33 +242,32 @@ public class Fields {
          */
         Field fldann = fld.getAnnotation(Field.class);
         if (fldann == null) {
-            throw new AssertionError(messageName + " - Positioned FieldDescriptor not defined: " + fieldName);
+            throw new AssertionError(messageName + " - 位置字段描述未定义注解:  " + fieldName);
         }
         /*
-        调用辅助类FieldDefinition，生成字段。
-        其中，fld.getType():使用了java.lang.reflect.Field中public Class<?> getType()。
-        通过该函数返回标识由该对象表示的字段的声明类型的类对象
+            调用辅助类FieldDefinition，生成字段对象。
+            其中，fld.getType():使用了java.lang.reflect.Field中public Class<?> getType()：通过该函数返回标识由该对象表示的字段的声明类型的类对象
          */
         FieldDefinition field = new FieldDefinition(fldann, fld.getType());
 
         /*
-        判断字段长度是否符合要求，如果不符合要求的话，抛出异常。
+            判断字段长度是否符合要求，如果不符合要求的话，抛出异常。
          */
         if (field.length == 0) {
-            throw new AssertionError(messageName + " - Positioned FieldDescriptor must explicit length: " + fieldName);
+            throw new AssertionError(messageName + " - 定位字段描述符必须显式长度: " + fieldName);
         }
         if ((annotation.end() - annotation.start() + 1) != field.length) {
-            throw new AssertionError(messageName + " - Positioned FieldDescriptors length mismatch: " + fieldName);
+            throw new AssertionError(messageName + " - 定位字段描述符长度不匹配: " + fieldName);
         }
 
-        //以上代码是对代码合法性进行验证，验证通过后，调用位置字段定义辅助类的构造方法，生成实例。
+        //以上代码是对属性合法性进行验证，验证通过后，调用位置字段定义辅助类的构造方法，生成实例。
         PositionedFieldDefinition pfd = new PositionedFieldDefinition(fieldName, annotation.start(),
                 annotation.end(), field, annotation.policy());
         return pfd;
     }
 
     /**
-     *  利用java反射类，分隔符字段定义
+     *  利用java反射类，标记字段定义
      * @param messageName   请求或相应类名
      * @param fieldName     字段名
      * @param annotation    注解
@@ -280,17 +278,17 @@ public class Fields {
         try {
             fld = Fields.class.getDeclaredField(fieldName);
         } catch (Exception ex) {
-            throw new AssertionError(messageName + " - Tagged FieldDescriptor not defined: " + fieldName);
+            throw new AssertionError(messageName + " - 标记字段描述未定义: " + fieldName);
         }
 
         Field fldann = fld.getAnnotation(Field.class);
         if (fldann == null) {
-            throw new AssertionError(messageName + " - Tagged FieldDescriptor not defined: " + fieldName);
+            throw new AssertionError(messageName + " - 标记字段描述未定义: " + fieldName);
         }
 
         FieldDefinition field = new FieldDefinition(fldann, fld.getType());
         if (field.tag.isEmpty()) {
-            throw new AssertionError(messageName + " - field tag not defined: " + fieldName);
+            throw new AssertionError(messageName + " - 未定义字段标记: " + fieldName);
         }
 
         TaggedFieldDefinition tfd = new TaggedFieldDefinition(fieldName, field, annotation.value());
