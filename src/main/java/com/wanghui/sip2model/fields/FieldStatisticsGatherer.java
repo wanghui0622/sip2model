@@ -8,7 +8,7 @@ import java.util.TreeMap;
 /**
  * @auther wanghui
  * @create 2018-11-13 0:36
- * @Description
+ * @Description 字段静态生成器
  */
 public class FieldStatisticsGatherer extends Thread {
     private static FieldStatisticsGatherer fieldStatisticsGatherer = null;
@@ -21,6 +21,11 @@ public class FieldStatisticsGatherer extends Thread {
         return FieldStatisticsGatherer.fieldStatisticsGatherer;
     }
 
+    /**
+     * todo 记录已经使用过的构造器，提高效率。
+     * @param name
+     * @param required
+     */
     public void recordUsage(String name, boolean required) {
         this.usages.put(name, new Usage(this.usages.get(name), required));
     }

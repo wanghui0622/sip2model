@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @auther wanghui
  * @create 2018-11-13 0:36
- * @Description 字段定义，用于构造字段的基本信息。SIP2请求和响应的字段分类两类：1、指定位置的字段,2、可变长度字段。
+ * @Description 字段定义
  */
 public class FieldDefinition {
 
@@ -35,23 +35,25 @@ public class FieldDefinition {
     protected FieldDefinition() {
     }
 
+
     protected FieldDefinition(String name, FieldDefinition d, FieldPolicy policy) {
         this.tag = d.tag;
         this.length = d.length;
         /*
-        字段的策略选择
+         * 字段政策 ：
+         * 1、可变长度字段，策略必须明确，要么必选，要么可选；不存在中间态;
+         * 2、固定长度字段，策略不能被覆盖
+         *
          */
         if ((d.policy == FieldPolicy.DEFAULT) && (policy != FieldPolicy.DEFAULT)) {
             this.policy = policy;
         } else if ((d.policy == FieldPolicy.DEFAULT) && (policy == FieldPolicy.DEFAULT)) {
-            throw new AssertionError(name + " mutable required state needs explicit value");
+            throw new AssertionError(name + "：可变长度的字段策略不能是DEFAULT,只能是REQUIRED或者NOT_REQUIRED");
         } else if ((d.policy != FieldPolicy.DEFAULT) && (policy == FieldPolicy.DEFAULT)) {
             this.policy = d.policy;
         } else {
-            throw new AssertionError(name + " immutable required state cannot be overriden");
+            throw new AssertionError(name + "：不能覆盖固定字段的策略");
         }
-        // FieldStatisticsGatherer.getFieldStatisticsGatherer().RecordUsage(name,
-        // this.required);
     }
 
     /**
