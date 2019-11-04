@@ -29,9 +29,9 @@ import java.util.*;
 public abstract class Message implements Serializable {
 
     private static final long serialVersionUID = 1609258005567594730L;
-    public static final String PROP_CHARSET = "com.circulation.SIP.charset";
-    public static final String PROP_AUTOPOPULATE = "com.circulation.SIP.messages.AutoPopulationEmptyRequiredFields";
-    public static final String PROP_VARIABLE_FIELD_ORDERING = "com.circulation.SIP.VariableFieldOrdering";
+    public static final String PROP_CHARSET = "com.circulation.sip2server.charset";
+    public static final String PROP_AUTOPOPULATE = "com.wanghui.sip2model.AutoPopulationEmptyRequiredFields";
+    public static final String PROP_VARIABLE_FIELD_ORDERING = "com.circulation.sip2server.VariableFieldOrdering";
 
     public static final String PROP_AUTOPOPULATE_OFF = "off";
     public static final String PROP_AUTOPOPULATE_DECODE = "decode";

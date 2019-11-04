@@ -1,8 +1,8 @@
 package com.wanghui.sip2model.model;
 
 import com.wanghui.sip2model.annotations.*;
+import com.wanghui.sip2model.types.enumerations.ProtocolVersion;
 import com.wanghui.sip2model.types.flagfields.SupportedMessages;
-import sun.security.ssl.ProtocolVersion;
 
 import java.util.Date;
 
