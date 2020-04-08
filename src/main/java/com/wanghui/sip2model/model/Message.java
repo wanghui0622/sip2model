@@ -31,18 +31,14 @@ public abstract class Message implements Serializable {
     private static final long serialVersionUID = 1609258005567594730L;
     public static final String PROP_CHARSET = "com.wanghui.sip2server.charset";
     public static final String PROP_AUTOPOPULATE = "com.wanghui.sip2model.AutoPopulationEmptyRequiredFields";
-    public static final String PROP_VARIABLE_FIELD_ORDERING = "com.circulation.sip2server.VariableFieldOrdering";
-
+    public static final String PROP_VARIABLE_FIELD_ORDERING = "com.wanghui.sip2server.VariableFieldOrdering";
     public static final String PROP_AUTOPOPULATE_OFF = "off";
     public static final String PROP_AUTOPOPULATE_DECODE = "decode";
     public static final String PROP_AUTOPOPULATE_ENCODE = "encode";
     public static final String PROP_AUTOPOPULATE_BIDIRECTIONAL = "bidirectional";
-    
     public static final String PROP_AUTOPOPULATE_DEFAULT = PROP_AUTOPOPULATE_BIDIRECTIONAL;
-    
     public static final String PROP_VARIABLE_FIELD_ORDERING_ALPHABETICAL = "alphabetical";
     public static final String PROP_VARIABLE_FIELD_ORDERING_SPECIFICATION = "specification";
- 
     public static final String PROP_VARIABLE_FIELD_ORDERING_DEFAULT =  PROP_VARIABLE_FIELD_ORDERING_ALPHABETICAL;
 
     private static final String PROP_DEFAULT_CHARSET = "UTF-8";
@@ -51,44 +47,46 @@ public abstract class Message implements Serializable {
 
     private Character SequenceCharacter = null;
 
-    //设置字符序列
+    /**
+     * 设置字符序列
+     * @param sequenceCharacter
+     */
     public void setSequenceCharacter(Character sequenceCharacter) {
     	this.SequenceCharacter = sequenceCharacter;
     }
 
-    //获取字符序列
+    /**
+     * 获取字符序列
+     * @return
+     */
     public Character getSequenceCharacter() {
         return this.SequenceCharacter;
     }
 
-    //获得编码格式
+    /**
+     * 获得编码格式
+     * @return
+     */
     public static String getCharsetEncoding() {
         //获取指定键指示的系统属性
         return System.getProperty(PROP_CHARSET, PROP_DEFAULT_CHARSET);      
     }
 
-    /*
-    该函数没有用到
+    /**
+     * 将日期转化为SIP2中规定的日期格式
+     * @param date
+     * @return
      */
-    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-        //  从此流读取当前类的非静态和非瞬态字段。
-        ois.defaultReadObject();
-    }
-    /*
-    该函数没有用到
-    */
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        //将当前类的非静态和非暂态字段写入此流。
-        oos.defaultWriteObject();
-    }
-
-    //将日期转化为SIP2中规定的日期格式
     private String mangleDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd    HHmmss");
         return sdf.format(date);
     }
 
-    //将SIP2中的日期格式转化为日期类型的日期
+    /**
+     * 将SIP2中的日期格式转化为日期类型的日期
+     * @param date
+     * @return
+     */
     private Date demangleDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd    HHmmss");
         try {
@@ -653,6 +651,7 @@ public abstract class Message implements Serializable {
             }
         }
 
+    @Deprecated
     public void xmlEncode(OutputStream strm) {
         XMLEncoder out = new XMLEncoder(strm);
         out.writeObject(this);
